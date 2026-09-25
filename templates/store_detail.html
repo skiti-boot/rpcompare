@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ store.name }} — RPcompare
+{% endblock %}
+
+{% block content %}
+
+<section class="container section">
+
+    <p class="eyebrow">STORE</p>
+
+    <h1>{{ store.name }}</h1>
+
+    <p class="section-description">
+        Products available from {{ store.name }}.
+    </p>
+
+</section>
+
+
+<section class="container section">
+
+    <div class="product-row">
+
+        {% for product in products %}
+
+            <a
+                class="product-card-new"
+                href="{% url 'product_detail' product.slug %}"
+            >
+
+                <div class="product-image-new">
+
+                    {% if product.image_url %}
+
+                        <img
+                            src="{{ product.image_url }}"
+                            alt="{{ product.name }}"
+                        >
+
+                    {% else %}
+
+                        <span>{{ product.name }}</span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="product-card-body">
+
+                    <div class="product-category">
+                        {{ product.category.name }}
+                    </div>
+
+                    <h3>
+                        {{ product.name }}
+                    </h3>
+
+                    <span class="compare-link">
+                        View product →
+                    </span>
+
+                </div>
+
+            </a>
+
+        {% empty %}
+
+            <div class="empty">
+                <h3>No products found</h3>
+                <p>This store does not have products listed yet.</p>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

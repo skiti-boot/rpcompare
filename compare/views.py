@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, Prefetch
 
-from .models import Product, Category, Offer
+from .models import Product, Category, Offer, Store
 
 
 def available_offers():
@@ -230,3 +230,37 @@ def go_to_offer(request, offer_id):
     url = offer.affiliate_url or offer.product_url
 
     return redirect(url)
+
+def stores(request):
+    stores = Store.objects.all().order_by("name")
+
+    return render(
+        request,
+        "stores.html",
+        {
+            "stores": stores,
+        }
+    )
+
+def store_detail(request, store_id):
+    store = Store.objects.get(id=store_id)
+
+    offers = Offer.objects.filter(
+        store=store
+    ).select_related(
+        "product"
+    )
+
+    products = []
+
+    for offer in offers:
+        products.append(offer.product)
+
+    return render(
+        request,
+        "store_detail.html",
+        {
+            "store": store,
+            "products": products,
+        }
+    )
