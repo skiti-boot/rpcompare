@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search{% if q %} — {{ q }}{% endif %} — RPcompare
+{% endblock %}
+
+{% block content %}
+
+<div class="container section">
+
+    <div class="section-heading">
+
+        <p class="eyebrow">
+            RPCOMPARE SEARCH
+        </p>
+
+        {% if q %}
+
+            <h1>
+                Results for "{{ q }}"
+            </h1>
+
+            <p class="section-description">
+                Compare prices for products matching your search.
+            </p>
+
+        {% else %}
+
+            <h1>
+                Search electronics
+            </h1>
+
+            <p class="section-description">
+                Search for phones, laptops, headphones, TVs and more.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    {% if q %}
+
+        <div class="grid">
+
+            {% for p in products %}
+
+                <a
+                    class="card product-card"
+                    href="{% url 'product_detail' p.slug %}"
+                >
+
+                    <div class="product-image">
+
+                        {% if p.image_url %}
+
+                            <img
+                                src="{{ p.image_url }}"
+                                alt="{{ p.name }}"
+                            >
+
+                        {% else %}
+
+                            <div class="no-image">
+                                No image
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="product-info">
+
+                        <p class="eyebrow">
+                            {{ p.category.name }}
+                        </p>
+
+                        <h3>
+                            {{ p.name }}
+                        </h3>
+
+
+                        {% if p.description %}
+
+                            <p>
+                                {{ p.description|truncatewords:18 }}
+                            </p>
+
+                        {% endif %}
+
+
+                        {% with offer=p.available_offers|first %}
+
+                            <div class="product-price">
+
+                                <small>
+                                    From
+                                </small>
+
+                                <strong>
+                                    Rs. {{ offer.price }}
+                                </strong>
+
+                            </div>
+
+                            <div class="product-store">
+                                {{ offer.store.name }}
+                            </div>
+
+                        {% endwith %}
+
+
+                        <span class="card-link">
+                            Compare prices →
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+            {% empty %}
+
+                <div class="empty">
+
+                    <h3>
+                        No products found
+                    </h3>
+
+                    <p>
+                        Try searching for another product.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

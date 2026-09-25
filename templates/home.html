@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}
+RPcompare — Compare Electronics Prices
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container">
+
+        <p class="eyebrow">SMARTER SHOPPING</p>
+
+        <h1>
+            Compare prices.
+            <br>
+            <span>Find the right deal.</span>
+        </h1>
+
+        <p class="lead">
+            Compare electronics prices from multiple online stores
+            and find the lowest available offer.
+        </p>
+
+        <form class="hero-search" action="{% url 'search' %}" method="get">
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Search phones, laptops, TVs..."
+                aria-label="Search products"
+            >
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+
+<!-- CATEGORIES -->
+
+<section class="container section">
+
+    <div class="section-heading">
+
+        <p class="eyebrow">
+            EXPLORE
+        </p>
+
+        <h2>
+            Browse electronics
+        </h2>
+
+        <p class="section-description">
+            Find products by category and compare prices from different stores.
+        </p>
+
+    </div>
+
+
+    <div class="chips">
+
+        {% for c in categories %}
+
+            <a href="{% url 'category' c.slug %}">
+                {{ c.name }}
+            </a>
+
+        {% empty %}
+
+            <span class="muted">
+                No categories available.
+            </span>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+
+<section class="container section">
+
+    <div class="section-heading">
+
+        <p class="eyebrow">
+            FEATURED DEALS
+        </p>
+
+        <h2>
+            Latest prices
+        </h2>
+
+        <p class="section-description">
+            Compare the latest available offers from online stores.
+        </p>
+
+    </div>
+
+
+    <div class="grid">
+
+        {% for p in products %}
+
+            <a
+                class="card product-card"
+                href="{% url 'product_detail' p.slug %}"
+            >
+
+                <div class="product-image">
+
+                    {% if p.image_url %}
+
+                        <img
+                            src="{{ p.image_url }}"
+                            alt="{{ p.name }}"
+                        >
+
+                    {% else %}
+
+                        <div class="no-image">
+                            {{ p.name }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="product-info">
+
+                    <p class="eyebrow">
+                        {{ p.category.name }}
+                    </p>
+
+                    <h3>
+                        {{ p.name }}
+                    </h3>
+
+
+                    {% if p.description %}
+
+                        <p>
+                            {{ p.description|truncatewords:16 }}
+                        </p>
+
+                    {% endif %}
+
+
+                    {% with offer=p.available_offers|first %}
+
+                        <div class="product-price">
+
+                            <small>
+                                LOWEST PRICE
+                            </small>
+
+                            <strong>
+                                Rs. {{ offer.price }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="product-store">
+                            {{ offer.store.name }}
+                        </div>
+
+                    {% endwith %}
+
+
+                    <span class="card-link">
+                        Compare prices →
+                    </span>
+
+                </div>
+
+            </a>
+
+        {% empty %}
+
+            <div class="empty">
+
+                <h3>
+                    No products available
+                </h3>
+
+                <p>
+                    Products with available offers will appear here.
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- HOW IT WORKS -->
+
+<section class="container section">
+
+    <div class="section-heading">
+
+        <p class="eyebrow">
+            HOW IT WORKS
+        </p>
+
+        <h2>
+            Shop smarter in three steps
+        </h2>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="product-info">
+
+                <span class="eyebrow">
+                    01
+                </span>
+
+                <h3>
+                    Search
+                </h3>
+
+                <p>
+                    Find the phone, laptop, TV or other electronics
+                    you are looking for.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="product-info">
+
+                <span class="eyebrow">
+                    02
+                </span>
+
+                <h3>
+                    Compare
+                </h3>
+
+                <p>
+                    See available prices from different online stores
+                    in one place.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="product-info">
+
+                <span class="eyebrow">
+                    03
+                </span>
+
+                <h3>
+                    Buy
+                </h3>
+
+                <p>
+                    Open the store listing and complete your purchase
+                    directly with the retailer.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

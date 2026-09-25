@@ -1,0 +1,114 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}RPcompare — Compare Prices{% endblock %}</title>
+
+    <meta name="description"
+          content="RPcompare helps you compare electronics prices across online stores.">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="container nav">
+
+        <a class="brand" href="{% url 'home' %}">
+            RP<span>compare</span>
+        </a>
+
+        <form class="search" action="{% url 'search' %}" method="get">
+            <input
+                type="text"
+                name="q"
+                value="{{ q|default:'' }}"
+                placeholder="Search electronics..."
+                aria-label="Search products"
+            >
+            <button type="submit">Search</button>
+        </form>
+
+        <nav class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'category' 'electronics' %}">Electronics</a>
+            <a href="{% url 'about' %}">About</a>
+        </nav>
+
+        <button
+            class="theme"
+            onclick="toggleTheme()"
+            type="button"
+            aria-label="Toggle dark mode"
+        >
+            ☾
+        </button>
+
+    </div>
+
+</header>
+
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+
+<footer>
+
+    <div class="container footer-grid">
+
+        <div>
+            <strong>RPcompare</strong>
+
+            <p>
+                Compare electronics prices and find offers
+                from online stores.
+            </p>
+
+            <small>
+                Created by Roshan K Parmar
+            </small>
+        </div>
+
+        <div>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'privacy' %}">Privacy</a>
+            <a href="{% url 'terms' %}">Terms</a>
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "rp-theme",
+        document.body.classList.contains("dark")
+            ? "dark"
+            : "light"
+    );
+
+}
+
+if (localStorage.getItem("rp-theme") === "dark") {
+    document.body.classList.add("dark");
+}
+
+</script>
+
+</body>
+</html>
