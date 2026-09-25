@@ -2,7 +2,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "rpcompare-development-key-change-before-production"
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['roshanp.pythonanywhere.com']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
