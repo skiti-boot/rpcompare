@@ -13,29 +13,16 @@ def available_offers():
 
 
 def home(request):
+    categories = Category.objects.all()
+    products = Product.objects.all()
+    stores = Store.objects.all()
 
-    products = Product.objects.filter(
-        offers__in_stock=True
-    ).distinct().order_by(
-        "-updated_at"
-    ).prefetch_related(
-        Prefetch(
-            "offers",
-            queryset=available_offers(),
-            to_attr="available_offers"
-        )
-    )
-
-    categories = Category.objects.all().order_by("name")
-
-    return render(
-        request,
-        "home.html",
-        {
-            "products": products,
-            "categories": categories,
-        }
-    )
+    return render(request, "home.html", {
+        "categories": categories,
+        "products": products,
+        "stores": stores,
+    })
+    
 
 
 def search(request):
