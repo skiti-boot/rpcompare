@@ -1,0 +1,19 @@
+RPCompare Stage 9 - Remote Merchant Feed Import
+
+Purpose:
+Download an authorized merchant CSV feed directly from a URL and import it into RPCompare.
+
+Install:
+Extract this ZIP into:
+C:\Users\King\website
+
+Run:
+python manage.py sync_remote_feed --url "https://YOUR-AUTHORIZED-FEED-URL.csv"
+
+The feed must use the same CSV columns as the existing RPCompare importer:
+category,store,name,slug,description,image_url,price,currency,product_url,affiliate_url,in_stock,store_website
+
+IMPORTANT:
+Only use feeds you are authorized to access. Do not scrape merchant sites or bypass access controls.
+
+No database migration is required for this stage.

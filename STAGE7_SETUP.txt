@@ -1,0 +1,25 @@
+RPCompare Stage 7 — Bulk Merchant Sync
+
+Install:
+1. Extract this ZIP into C:\Users\King\website and allow the new files to merge.
+2. Do NOT replace your whole project.
+
+Run from the project root:
+    python manage.py sync_all_merchants --merchant both
+
+One merchant:
+    python manage.py sync_all_merchants --merchant ebay
+
+Selected searches:
+    python manage.py sync_all_merchants --merchant ebay --queries "laptop,smartphone,4k tv"
+
+This stage uses the authorized merchant API adapters from Stage 6.
+It does not create fake prices, fake stock, or fake affiliate links.
+
+Amazon requires an accepted Associates account, Creators API access, credentials,
+and a valid Partner Tag for the target marketplace.
+
+eBay Browse API requires developer credentials. Affiliate URLs require the
+appropriate eBay Partner Network campaign information.
+
+Never put API secrets in GitHub or source files.

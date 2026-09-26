@@ -1,253 +1,124 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q, Prefetch
+from django.db.models import Min, Q
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Product, Category, Offer, Store
-
-
-def available_offers():
-    return Offer.objects.filter(
-        in_stock=True
-    ).select_related(
-        "store"
-    ).order_by("price")
+from .models import Category, Offer, Product, Store
 
 
 def home(request):
-    categories = Category.objects.all()
-    products = Product.objects.all()
-    stores = Store.objects.all()
+    categories = Category.objects.all().order_by("name")
+    products = Product.objects.select_related("category").prefetch_related("offers__store").order_by("-updated_at")[:24]
+    stores = Store.objects.filter(active=True).order_by("name")[:12]
+    featured = Product.objects.select_related("category").prefetch_related(
+        "offers__store"
+    ).annotate(
+        lowest_price=Min("offers__price")
+    ).order_by("lowest_price", "-updated_at")[:12]
 
     return render(request, "home.html", {
         "categories": categories,
         "products": products,
+        "featured_products": featured,
         "stores": stores,
     })
-    
-
-
-def search(request):
-
-    q = request.GET.get("q", "").strip()
-
-    if q:
-
-        products = Product.objects.filter(
-            offers__in_stock=True
-        ).filter(
-            Q(name__icontains=q) |
-            Q(description__icontains=q)
-        ).distinct().prefetch_related(
-            Prefetch(
-                "offers",
-                queryset=available_offers(),
-                to_attr="available_offers"
-            )
-        )
-
-    else:
-
-        products = Product.objects.none()
-
-    return render(
-        request,
-        "search.html",
-        {
-            "products": products,
-            "q": q,
-        }
-    )
-
-
-def product_detail(request, slug):
-
-    product = get_object_or_404(
-        Product,
-        slug=slug
-    )
-
-    offers = list(
-        product.offers.filter(
-            in_stock=True
-        ).select_related(
-            "store"
-        ).prefetch_related(
-            "price_history"
-        ).order_by("price")
-    )
-
-    for offer in offers:
-
-        history = list(
-            offer.price_history.all()[:2]
-        )
-
-        offer.previous_price = None
-        offer.price_drop = None
-        offer.price_drop_percent = None
-
-        if len(history) >= 2:
-
-            current = history[0].price
-            previous = history[1].price
-
-            if previous > current:
-
-                offer.previous_price = previous
-
-                offer.price_drop = (
-                    previous - current
-                )
-
-                offer.price_drop_percent = (
-                    (previous - current)
-                    / previous
-                ) * 100
-
-    return render(
-        request,
-        "product_detail.html",
-        {
-            "product": product,
-            "offers": offers,
-        }
-    )
 
 
 def category(request, slug):
-
-    category_obj = get_object_or_404(
-        Category,
-        slug=slug
-    )
-
-    categories = Category.objects.exclude(
-        slug="electronics"
+    cat = get_object_or_404(Category, slug=slug)
+    products = Product.objects.filter(category=cat).select_related(
+        "category"
+    ).prefetch_related("offers__store").annotate(
+        lowest_price=Min("offers__price")
     ).order_by("name")
 
-    products = category_obj.products.filter(
-        offers__in_stock=True
-    ).distinct().order_by(
-        "-updated_at"
-    ).prefetch_related(
-        Prefetch(
-            "offers",
-            queryset=available_offers(),
-            to_attr="available_offers"
-        )
-    )
+    return render(request, "category.html", {
+        "category": cat,
+        "products": products,
+    })
 
-    return render(
-        request,
-        "category.html",
-        {
-            "category": category_obj,
-            "products": products,
-            "categories": categories,
-        }
+
+def product_detail(request, slug):
+    product = get_object_or_404(
+        Product.objects.select_related("category").prefetch_related(
+            "offers__store", "offers__price_history"
+        ),
+        slug=slug,
     )
+    offers = product.offers.select_related("store").filter(
+        store__active=True
+    ).order_by("price")
+    lowest_offer = offers.first()
+
+    return render(request, "product_detail.html", {
+        "product": product,
+        "offers": offers,
+        "lowest_offer": lowest_offer,
+    })
+
+
+def search(request):
+    q = request.GET.get("q", "").strip()
+    products = Product.objects.none()
+
+    if q:
+        products = Product.objects.filter(
+            Q(name__icontains=q)
+            | Q(description__icontains=q)
+            | Q(category__name__icontains=q)
+        ).select_related("category").prefetch_related(
+            "offers__store"
+        ).annotate(
+            lowest_price=Min("offers__price")
+        ).order_by("name")
+
+    return render(request, "search.html", {"q": q, "products": products})
+
+
+def stores(request):
+    store_list = Store.objects.filter(active=True).order_by("name")
+    return render(request, "stores.html", {"stores": store_list})
+
+
+def store_detail(request, store_id):
+    store = get_object_or_404(Store, id=store_id, active=True)
+    products = Product.objects.filter(
+        offers__store=store
+    ).distinct().select_related("category").prefetch_related(
+        "offers__store"
+    ).annotate(
+        lowest_price=Min("offers__price")
+    ).order_by("name")
+
+    return render(request, "store_detail.html", {
+        "store": store,
+        "products": products,
+    })
+
+
+def go_to_store(request, offer_id):
+    offer = get_object_or_404(
+        Offer.objects.select_related("product", "store"),
+        id=offer_id,
+    )
+    destination = offer.affiliate_url or offer.product_url
+
+    if not destination:
+        raise Http404("This offer does not have a destination URL.")
+
+    return redirect(destination)
 
 
 def about(request):
-
-    return render(
-        request,
-        "simple.html",
-        {
-            "title": "About RPcompare",
-            "text": (
-                "RPcompare makes it easier to compare "
-                "electronics prices from different online stores."
-            )
-        }
-    )
+    return render(request, "about.html")
 
 
 def contact(request):
-
-    return render(
-        request,
-        "simple.html",
-        {
-            "title": "Contact",
-            "text": (
-                "For questions, partnerships, or corrections, "
-                "contact the RPcompare team."
-            )
-        }
-    )
+    return render(request, "contact.html")
 
 
 def privacy(request):
-
-    return render(
-        request,
-        "simple.html",
-        {
-            "title": "Privacy Policy",
-            "text": (
-                "This page will contain RPcompare's privacy "
-                "policy before public launch."
-            )
-        }
-    )
+    return render(request, "privacy.html")
 
 
 def terms(request):
-
-    return render(
-        request,
-        "simple.html",
-        {
-            "title": "Terms of Use",
-            "text": (
-                "This page will contain RPcompare's terms "
-                "of use before public launch."
-            )
-        }
-    )
-
-
-def go_to_offer(request, offer_id):
-
-    offer = get_object_or_404(
-        Offer,
-        id=offer_id
-    )
-
-    url = offer.affiliate_url or offer.product_url
-
-    return redirect(url)
-
-def stores(request):
-    stores = Store.objects.all().order_by("name")
-
-    return render(
-        request,
-        "stores.html",
-        {
-            "stores": stores,
-        }
-    )
-
-def store_detail(request, store_id):
-    store = Store.objects.get(id=store_id)
-
-    offers = Offer.objects.filter(
-        store=store
-    ).select_related(
-        "product"
-    )
-
-    products = []
-
-    for offer in offers:
-        products.append(offer.product)
-
-    return render(
-        request,
-        "store_detail.html",
-        {
-            "store": store,
-            "products": products,
-        }
-    )
+    return render(request, "terms.html")

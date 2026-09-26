@@ -1,75 +1,24 @@
 {% extends "base.html" %}
-
-{% block title %}
-Stores — RPcompare
-{% endblock %}
+{% block title %}Stores — RPCompare{% endblock %}
 
 {% block content %}
-
-<section class="hero">
-    <div class="container hero-content">
-
-        <div class="hero-text">
-            <p class="eyebrow">SHOPPING STORES</p>
-
-            <h1>
-                Compare stores.
-                <br>
-                <span>Choose where to buy.</span>
-            </h1>
-
-            <p class="lead">
-                Explore stores available on RPcompare and compare
-                products and prices from different retailers.
-            </p>
-        </div>
-
-    </div>
-</section>
-
-
 <section class="container section">
-
-    <div class="section-heading">
-        <p class="eyebrow">OUR STORES</p>
-        <h2>Popular stores</h2>
-        <p class="section-description">
-            Browse products from stores available on RPcompare.
-        </p>
-    </div>
-
+    <p class="eyebrow">MERCHANTS</p>
+    <h1>Stores</h1>
+    <p class="section-description">Browse stores available on RPCompare.</p>
 
     <div class="store-grid">
-
         {% for store in stores %}
-
-            <a
-                href="{% url 'store_detail' store.id %}"
-                class="store-card"
-            >
-
-                <div class="store-logo">
-                    {{ store.name|first|upper }}
-                </div>
-
-                <div>
-                    <h3>{{ store.name }}</h3>
-                    <p>View products →</p>
-                </div>
-
-            </a>
-
-        {% empty %}
-
-            <div class="empty">
-                <h3>No stores available</h3>
-                <p>Stores will appear here when products are added.</p>
+        <a class="store-card" href="{% url 'store_detail' store.id %}">
+            <div class="store-logo">{{ store.name|first|upper }}</div>
+            <div>
+                <h3>{{ store.name }}</h3>
+                <span>View products →</span>
             </div>
-
+        </a>
+        {% empty %}
+        <p>No stores available.</p>
         {% endfor %}
-
     </div>
-
 </section>
-
 {% endblock %}

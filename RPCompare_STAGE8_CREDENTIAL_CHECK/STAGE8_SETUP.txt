@@ -1,0 +1,23 @@
+RPCompare Stage 8 - Credential Check
+
+Extract into:
+C:\Users\King\website
+
+Then run:
+python manage.py check_merchant_credentials
+
+This only checks environment-variable presence.
+It does not create accounts or contact merchants.
+
+Required Amazon:
+AMAZON_CREATOR_CLIENT_ID
+AMAZON_CREATOR_CLIENT_SECRET
+AMAZON_PARTNER_TAG
+
+Required eBay:
+EBAY_CLIENT_ID
+EBAY_CLIENT_SECRET
+
+Optional eBay:
+EBAY_CAMPAIGN_ID
+EBAY_REFERENCE_ID

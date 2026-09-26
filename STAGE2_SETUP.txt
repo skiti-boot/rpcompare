@@ -1,0 +1,11 @@
+RPCompare Stage 2 is an in-place upgrade.
+
+Run after copying the two Python files:
+python manage.py sync_feed --file merchant_feed.csv
+
+The feed can be CSV or JSON and updates products, stores, offers and price history.
+
+PythonAnywhere scheduled task:
+cd /home/Roshanp/rpcompare && /home/Roshanp/rpcompare/venv/bin/python manage.py sync_feed --file /home/Roshanp/rpcompare/merchant_feed.csv
+
+Use only authorized merchant/affiliate feeds. Sample URLs are not affiliate links.

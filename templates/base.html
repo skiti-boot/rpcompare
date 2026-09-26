@@ -1,37 +1,64 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}RPcompare — Compare Prices{% endblock %}</title>
+    <meta name="google-site-verification"
+          content="f82JigAr0Wgr2CU65wR3NPA4cQ2mGOelWNpIBBfuiTI">
 
     <meta name="description"
-          content="RPcompare helps you compare electronics prices across online stores.">
+          content="RPCompare helps you compare electronics prices from multiple online stores and find better deals in one place.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %}RPCompare — Compare Prices{% endblock %}</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="RPCompare — Compare Prices">
+    <meta property="og:description" content="Compare electronics prices from multiple stores.">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260926">
+
+    <style>
+    /* Critical layout fallback: keeps product pages styled even before static files are served. */
+    .product-detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
+    .product-detail-image{min-width:0}.product-detail-image img,.product-placeholder.large{display:block;width:100%;height:420px;object-fit:cover;border-radius:18px}
+    .product-info h1{font-size:44px;line-height:1.05;margin:8px 0 16px}.product-info p{color:#68758b}
+    .lowest-price{margin-top:28px;padding:20px;border:1px solid #e4e8ee;border-radius:16px;display:flex;justify-content:space-between;align-items:center;gap:20px}.lowest-price strong{font-size:24px}
+    .offers-section{margin-top:64px}.offer-table{border:1px solid #e4e8ee;border-radius:16px;overflow:hidden}.offer-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:24px;align-items:center;padding:18px 20px;border-bottom:1px solid #e4e8ee}.offer-row:last-child{border-bottom:0}.offer-row .button{display:inline-block;border-radius:10px;background:#172033;color:#fff;padding:11px 16px;text-decoration:none;font-weight:700}.stock{font-size:12px;margin-left:8px;color:#18864b}.out-stock{font-size:12px;margin-left:8px;color:#b45309}.affiliate-note{font-size:12px;color:#7a8495;margin-top:14px}
+    @media(max-width:900px){.product-detail{grid-template-columns:1fr}}
+    @media(max-width:560px){.product-detail-image img,.product-placeholder.large{height:300px}.offer-row{grid-template-columns:1fr;gap:10px}}
+    </style>
+
+    {% block extra_head %}{% endblock %}
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "RPCompare",
+        "alternateName": "RPcompare",
+        "url": "https://roshanp.pythonanywhere.com/",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://roshanp.pythonanywhere.com/search/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 </head>
 
 <body>
-
 <header class="header">
-
     <div class="container nav">
-
-        <a class="brand" href="{% url 'home' %}">
-            RP<span>compare</span>
-        </a>
+        <a class="brand" href="{% url 'home' %}">RP<span>compare</span></a>
 
         <form class="search" action="{% url 'search' %}" method="get">
-            <input
-                type="text"
-                name="q"
-                value="{{ q|default:'' }}"
-                placeholder="Search electronics..."
-                aria-label="Search products"
-            >
+            <input type="text" name="q" value="{{ q|default:'' }}"
+                   placeholder="Search phones, laptops, TVs..." aria-label="Search products">
             <button type="submit">Search</button>
         </form>
 
@@ -40,76 +67,43 @@
             <a href="{% url 'category' 'electronics' %}">Electronics</a>
             <a href="{% url 'stores' %}">Stores</a>
             <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact' %}">Contact</a>
         </nav>
 
-        <button
-            class="theme"
-            onclick="toggleTheme()"
-            type="button"
-            aria-label="Toggle dark mode"
-        >
-            ☾
-        </button>
-
+        <button class="theme" onclick="toggleTheme()" type="button" aria-label="Toggle dark mode">☾</button>
     </div>
-
 </header>
 
-
-<main>
-    {% block content %}
-    {% endblock %}
-</main>
-
+<main>{% block content %}{% endblock %}</main>
 
 <footer>
-
     <div class="container footer-grid">
-
         <div>
             <strong>RPcompare</strong>
-
-            <p>
-                Compare electronics prices and find offers
-                from online stores.
-            </p>
-
-            <small>
-                Created by Roshan K Parmar
-            </small>
+            <p>Compare electronics prices from stores around the world.</p>
+            <small>Created by Roshan K Parmar</small>
         </div>
-
-        <div>
+        <div class="footer-links">
             <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'stores' %}">Stores</a>
             <a href="{% url 'privacy' %}">Privacy</a>
             <a href="{% url 'terms' %}">Terms</a>
+            <a href="{% url 'contact' %}">Contact</a>
         </div>
-
     </div>
-
 </footer>
 
-
 <script>
-
 function toggleTheme() {
-
     document.body.classList.toggle("dark");
-
     localStorage.setItem(
         "rp-theme",
-        document.body.classList.contains("dark")
-            ? "dark"
-            : "light"
+        document.body.classList.contains("dark") ? "dark" : "light"
     );
-
 }
-
 if (localStorage.getItem("rp-theme") === "dark") {
     document.body.classList.add("dark");
 }
-
 </script>
-
 </body>
 </html>

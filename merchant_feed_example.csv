@@ -1,0 +1,2 @@
+category,store,store_website,store_logo,name,slug,description,image_url,price,currency,product_url,affiliate_url,in_stock
+Electronics,Example Store,https://example.com,,Example Phone,example-phone,Example product,,299.99,USD,https://example.com/product,,true

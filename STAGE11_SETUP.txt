@@ -1,0 +1,41 @@
+RPCompare Stage 11 - Automatic Feed Sync
+
+INSTALL
+-------
+Copy:
+compare\management\commands\sync_scheduled_feeds.py
+
+to:
+C:\Users\King\website\compare\management\commands\
+
+VERIFY
+------
+python manage.py help
+
+You should see:
+sync_scheduled_feeds
+
+CONFIGURATION
+-------------
+Set the environment variable RPCOMPARE_FEEDS.
+
+Format:
+StoreName=https://authorized-feed-url.csv;Store2=https://another-feed-url.csv
+
+Example:
+set RPCOMPARE_FEEDS=MerchantA=https://example.com/feed.csv
+
+Then test:
+python manage.py sync_scheduled_feeds
+
+IMPORTANT
+---------
+Only use feed URLs you are authorized to access and use.
+Do not put fake affiliate URLs or credentials into the feed.
+
+SCHEDULING
+----------
+After a real feed works manually, the same command can be scheduled
+with Windows Task Scheduler or a PythonAnywhere scheduled task.
+
+Do not schedule it until the manual test succeeds.

@@ -1,0 +1,16 @@
+category,store,store_website,store_logo,name,slug,description,image_url,price,currency,product_url,affiliate_url,in_stock
+Electronics,Amazon,https://www.amazon.com,,Apple iPhone 15,apple-iphone-15,Apple iPhone 15 smartphone,,699,USD,https://www.amazon.com/,,True
+Electronics,eBay,https://www.ebay.com,,Apple iPhone 15,apple-iphone-15,Apple iPhone 15 smartphone,,679,USD,https://www.ebay.com/,,True
+Electronics,Walmart,https://www.walmart.com,,Samsung Galaxy S24,samsung-galaxy-s24,Samsung Galaxy S24 smartphone,,649,USD,https://www.walmart.com/,,True
+Electronics,Best Buy,https://www.bestbuy.com,,Samsung Galaxy S24,samsung-galaxy-s24,Samsung Galaxy S24 smartphone,,699,USD,https://www.bestbuy.com/,,True
+Laptops,Amazon,https://www.amazon.com,,HP Pavilion 15,hp-pavilion-15,HP Pavilion 15 laptop,,649,USD,https://www.amazon.com/,,True
+Laptops,eBay,https://www.ebay.com,,HP Pavilion 15,hp-pavilion-15,HP Pavilion 15 laptop,,629,USD,https://www.ebay.com/,,True
+Laptops,Newegg,https://www.newegg.com,,Lenovo IdeaPad 3,lenovo-ideapad-3,Lenovo IdeaPad 3 laptop,,549,USD,https://www.newegg.com/,,True
+Headphones,Amazon,https://www.amazon.com,,Sony WH-1000XM5,sony-wh-1000xm5,Sony wireless noise cancelling headphones,,349,USD,https://www.amazon.com/,,True
+Headphones,Best Buy,https://www.bestbuy.com,,Sony WH-1000XM5,sony-wh-1000xm5,Sony wireless noise cancelling headphones,,329,USD,https://www.bestbuy.com/,,True
+TVs,Walmart,https://www.walmart.com,,LG 55 Inch 4K TV,lg-55-inch-4k-tv,LG 55 inch 4K smart television,,399,USD,https://www.walmart.com/,,True
+TVs,Best Buy,https://www.bestbuy.com,,LG 55 Inch 4K TV,lg-55-inch-4k-tv,LG 55 inch 4K smart television,,429,USD,https://www.bestbuy.com/,,True
+Smartwatches,Amazon,https://www.amazon.com,,Apple Watch Series 9,apple-watch-series-9,Apple Watch Series 9,,329,USD,https://www.amazon.com/,,True
+Smartwatches,eBay,https://www.ebay.com,,Apple Watch Series 9,apple-watch-series-9,Apple Watch Series 9,,309,USD,https://www.ebay.com/,,True
+Accessories,AliExpress,https://www.aliexpress.com,,USB-C 65W Charger,usb-c-65w-charger,65W USB-C fast charger,,24.99,USD,https://www.aliexpress.com/,,True
+Accessories,Amazon,https://www.amazon.com,,USB-C 65W Charger,usb-c-65w-charger,65W USB-C fast charger,,29.99,USD,https://www.amazon.com/,,True

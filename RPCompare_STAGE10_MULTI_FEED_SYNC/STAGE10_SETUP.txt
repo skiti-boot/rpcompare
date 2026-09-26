@@ -1,0 +1,21 @@
+RPCompare Stage 10 - Multi Feed Sync
+
+Purpose:
+Sync multiple authorized merchant CSV feeds in one command and record each result in SyncLog.
+
+Install:
+Copy this file into:
+C:\Users\King\website\compare\management\commands\
+
+Command example:
+python manage.py sync_remote_feeds --feed "MerchantA=https://AUTHORIZED-FEED-URL.csv"
+
+Multiple feeds:
+python manage.py sync_remote_feeds --feed "MerchantA=https://FEED1.csv" --feed "MerchantB=https://FEED2.csv"
+
+Or set one environment variable:
+RPCOMPARE_FEEDS=MerchantA=https://FEED1.csv;MerchantB=https://FEED2.csv
+
+IMPORTANT:
+Only use merchant/product feeds you are authorized to access. Do not scrape sites or bypass access controls.
+No database migration is required because SyncLog was added in the earlier stage.

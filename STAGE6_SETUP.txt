@@ -1,0 +1,29 @@
+RPCompare Stage 6 — Python 3.4 API Compatibility Fix
+
+The previous Stage 5 adapters used Python 2's urllib2.
+Your machine is Python 3.4, so Stage 6 replaces those adapters with
+urllib.request and urllib.parse.
+
+Copy these two files into your existing project:
+
+compare/merchant_apis/amazon_creators.py
+compare/merchant_apis/ebay_browse.py
+
+No database changes are needed.
+
+Then the commands are:
+
+python manage.py sync_merchant_api --merchant amazon --query "wireless headphones"
+
+python manage.py sync_merchant_api --merchant ebay --query "wireless headphones"
+
+If credentials are not configured, the command will now give a clear
+configuration message instead of a Python import error.
+
+IMPORTANT:
+The API adapters do not contain fake credentials or fake affiliate IDs.
+Real product prices and affiliate links require approved merchant/API accounts.
+
+The next production stage is scheduled bulk synchronization across many
+queries/categories, deduplication, currency normalization, stale-offer
+handling, and merchant-specific credentials.

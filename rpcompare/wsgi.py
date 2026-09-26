@@ -1,4 +1,6 @@
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rpcompare.settings")
 from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rpcompare.settings")
+
 application = get_wsgi_application()

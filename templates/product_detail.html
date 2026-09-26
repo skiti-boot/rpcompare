@@ -1,282 +1,80 @@
 {% extends "base.html" %}
+{% block title %}{{ product.name }} Prices — RPCompare{% endblock %}
 
-{% block title %}
-{{ product.name }} — RPcompare
+{% block extra_head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{ product.name|escapejs }}",
+    "description": "{{ product.description|escapejs }}",
+    {% if product.image_url %}"image": ["{{ product.image_url|escapejs }}"],{% endif %}
+    "category": "{{ product.category.name|escapejs }}"
+}
+</script>
 {% endblock %}
 
 {% block content %}
+<section class="container section product-page">
+    <p class="breadcrumbs">
+        <a href="{% url 'home' %}">Home</a> /
+        <a href="{% url 'category' product.category.slug %}">{{ product.category.name }}</a> /
+        {{ product.name }}
+    </p>
 
-<div class="container section">
-
-    <a class="back" href="javascript:history.back()">
-        ← Back
-    </a>
-
-
-    <!-- PRODUCT HEADER -->
-    <div class="product-head">
-
-        <div class="product-main-image">
-
+    <div class="product-detail">
+        <div class="product-detail-image">
             {% if product.image_url %}
-
-                <img
-                    src="{{ product.image_url }}"
-                    alt="{{ product.name }}"
-                >
-
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
             {% else %}
-
-                <div class="no-image">
-                    {{ product.name }}
-                </div>
-
+            <div class="product-placeholder large">RP</div>
             {% endif %}
-
         </div>
 
+        <div class="product-info">
+            <p class="eyebrow">{{ product.category.name }}</p>
+            <h1>{{ product.name }}</h1>
+            <p>{{ product.description }}</p>
 
-        <div class="product-summary">
-
-            <p class="eyebrow">
-                {{ product.category.name }}
-            </p>
-
-            <h1>
-                {{ product.name }}
-            </h1>
-
-            {% if product.description %}
-
-                <p class="product-description">
-                    {{ product.description }}
-                </p>
-
+            {% if lowest_offer %}
+            <div class="lowest-price">
+                <span>Lowest available price</span>
+                <strong>{{ lowest_offer.price }} {{ lowest_offer.currency }}</strong>
+            </div>
             {% endif %}
-
-
-            {% with cheapest=offers|first %}
-
-                {% if cheapest %}
-
-                    <div class="starting-price">
-
-                        <small>
-                            LOWEST PRICE
-                        </small>
-
-                        <strong>
-                            Rs. {{ cheapest.price }}
-                        </strong>
-
-                        <span>
-                            at {{ cheapest.store.name }}
-                        </span>
-
-                    </div>
-
-                {% endif %}
-
-            {% endwith %}
-
         </div>
-
     </div>
 
-
-    <!-- PRICE COMPARISON -->
-    <section class="offers-section">
-
-        <div class="section-heading">
-
-            <p class="eyebrow">
-                PRICE COMPARISON
-            </p>
-
-            <h2>
-                Compare stores
-            </h2>
-
-            <p class="section-description">
-                Compare available prices and choose where to buy.
-            </p>
-
+    <div class="offers-section">
+        <div class="section-heading-row">
+            <div>
+                <p class="eyebrow">COMPARE</p>
+                <h2>Store offers</h2>
+            </div>
         </div>
 
-
-        <div class="offers">
-
-            {% for o in offers %}
-
-                <div class="offer {% if forloop.first %}best{% endif %}">
-
-
-                    <!-- STORE -->
-                    <div class="offer-store">
-
-                        {% if o.store.logo %}
-
-                            <img
-                                class="store-logo"
-                                src="{{ o.store.logo }}"
-                                alt="{{ o.store.name }}"
-                            >
-
-                        {% endif %}
-
-
-                        <div>
-
-                            <strong>
-                                {{ o.store.name }}
-                            </strong>
-
-                            {% if forloop.first %}
-
-                                <span class="badge">
-                                    Lowest price
-                                </span>
-
-                            {% endif %}
-
-                            <small>
-                                Available
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- PRICE -->
-                    <div class="offer-price">
-
-                        <small>
-                            PRICE
-                        </small>
-
-                        <strong>
-                            Rs. {{ o.price }}
-                        </strong>
-
-
-                        {% if o.price_drop %}
-
-                            <span class="price-drop">
-
-                                ↓ Rs. {{ o.price_drop|floatformat:0 }}
-
-                                cheaper
-
-                            </span>
-
-                        {% endif %}
-
-
-                        <small>
-                            Updated
-                            {{ o.updated_at|date:"M d, Y H:i" }}
-                        </small>
-
-                    </div>
-
-
-                    <!-- BUTTON -->
-                    <div class="offer-action">
-
-                        <a
-                            class="buy"
-                            href="{% url 'go_offer' o.id %}"
-                            target="_blank"
-                            rel="nofollow sponsored noopener"
-                        >
-                            View Deal →
-                        </a>
-
-                    </div>
-
+        <div class="offer-table">
+            {% for offer in offers %}
+            <div class="offer-row">
+                <div>
+                    <strong>{{ offer.store.name }}</strong>
+                    {% if offer.in_stock %}
+                    <span class="stock">In stock</span>
+                    {% else %}
+                    <span class="out-stock">Out of stock</span>
+                    {% endif %}
                 </div>
-
+                <strong>{{ offer.price }} {{ offer.currency }}</strong>
+                <a class="button" href="{% url 'go_to_store' offer.id %}" rel="nofollow sponsored">Visit store →</a>
+            </div>
             {% empty %}
-
-                <div class="empty">
-
-                    <h3>
-                        No offers available
-                    </h3>
-
-                    <p>
-                        We currently don't have a price for this product.
-                    </p>
-
-                </div>
-
+            <p>No offers are available yet.</p>
             {% endfor %}
-
         </div>
 
-    </section>
-
-
-    <!-- PRICE HISTORY -->
-    <section class="section price-history">
-
-        <div class="section-heading">
-
-            <p class="eyebrow">
-                PRICE HISTORY
-            </p>
-
-            <h2>
-                Recent price changes
-            </h2>
-
-        </div>
-
-
-        {% for o in offers %}
-
-            {% with history=o.price_history.all %}
-
-                {% if history %}
-
-                    <div class="card">
-
-                        <div class="product-info">
-
-                            <h3>
-                                {{ o.store.name }}
-                            </h3>
-
-
-                            {% for record in history|slice:":10" %}
-
-                                <div class="history-row">
-
-                                    <span>
-                                        {{ record.recorded_at|date:"M d, Y H:i" }}
-                                    </span>
-
-                                    <strong>
-                                        Rs. {{ record.price }}
-                                    </strong>
-
-                                </div>
-
-                            {% endfor %}
-
-                        </div>
-
-                    </div>
-
-                {% endif %}
-
-            {% endwith %}
-
-        {% endfor %}
-
-    </section>
-
-</div>
-
+        <p class="affiliate-note">
+            RPCompare may receive a commission when you purchase through certain tracked merchant links.
+        </p>
+    </div>
+</section>
 {% endblock %}

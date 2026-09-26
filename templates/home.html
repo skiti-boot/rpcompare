@@ -1,566 +1,103 @@
 {% extends "base.html" %}
-
-{% block title %}
-RPcompare — Compare Electronics Prices
-{% endblock %}
+{% block title %}RPCompare — Compare Electronics Prices{% endblock %}
 
 {% block content %}
-
-<!-- =========================================
-     HERO
-     ========================================= -->
-
 <section class="hero">
-
-```
-<div class="container hero-content">
-
-    <div class="hero-text">
-
-        <p class="eyebrow">
-            SMARTER SHOPPING
-        </p>
-
-        <h1>
-            Compare prices.
-            <br>
-            <span>Find the right deal.</span>
-        </h1>
-
-        <p class="lead">
-            Compare electronics prices from multiple online stores
-            and find the lowest available offer.
-        </p>
-
+    <div class="container hero-inner">
+        <div>
+            <p class="eyebrow">PRICE COMPARISON</p>
+            <h1>Find the right product at the right price.</h1>
+            <p class="hero-copy">Compare products and offers from multiple online stores in one place.</p>
+            <form class="hero-search" action="{% url 'search' %}" method="get">
+                <input name="q" placeholder="What are you looking for?" aria-label="Search">
+                <button type="submit">Compare prices</button>
+            </form>
+        </div>
     </div>
-
-
-    <form
-        class="hero-search"
-        action="{% url 'search' %}"
-        method="get"
-    >
-
-        <input
-            type="text"
-            name="q"
-            placeholder="Search phones, laptops, TVs..."
-            aria-label="Search products"
-        >
-
-        <button type="submit">
-            Search
-        </button>
-
-    </form>
-
-
-    <div class="hero-tags">
-
-        <span>📱 Smartphones</span>
-        <span>💻 Laptops</span>
-        <span>🎧 Headphones</span>
-        <span>📺 TVs</span>
-        <span>⌚ Smartwatches</span>
-
-    </div>
-
-</div>
-```
-
 </section>
 
-<!-- =========================================
-     CATEGORIES
-     ========================================= -->
-
 <section class="container section">
+    <div class="section-heading-row">
+        <div>
+            <p class="eyebrow">BROWSE</p>
+            <h2>Categories</h2>
+        </div>
+    </div>
 
-```
-<div class="section-heading">
-
-    <p class="eyebrow">
-        EXPLORE
-    </p>
-
-    <h2>
-        Shop by category
-    </h2>
-
-    <p class="section-description">
-        Find the products you need by browsing popular electronics categories.
-    </p>
-
-</div>
-
-
-<div class="category-row">
-
-    {% for c in categories %}
-
-        <a
-            class="category-card"
-            href="{% url 'category' c.slug %}"
-        >
-
-            <div class="category-icon">
-
-                {% if c.slug == "smartphones" %}
-                    📱
-                {% elif c.slug == "laptops" %}
-                    💻
-                {% elif c.slug == "headphones" %}
-                    🎧
-                {% elif c.slug == "tvs" %}
-                    📺
-                {% elif c.slug == "smartwatches" %}
-                    ⌚
-                {% elif c.slug == "accessories" %}
-                    🔌
-                {% elif c.slug == "electronics" %}
-                    ⚡
-                {% else %}
-                    🛍️
-                {% endif %}
-
-            </div>
-
-            <strong>
-                {{ c.name }}
-            </strong>
-
-            <span>
-                Compare prices →
-            </span>
-
+    <div class="category-grid">
+        {% for category in categories %}
+        <a class="category-card" href="{% url 'category' category.slug %}">
+            <span>{{ category.name|first|upper }}</span>
+            <h3>{{ category.name }}</h3>
+            <small>{{ category.products.count }} products</small>
         </a>
-
-    {% empty %}
-
-        <p class="muted">
-            No categories available.
-        </p>
-
-    {% endfor %}
-
-</div>
-```
-
+        {% empty %}
+        <p>No categories yet.</p>
+        {% endfor %}
+    </div>
 </section>
 
-<!-- =========================================
-     FEATURED PRODUCTS
-     ========================================= -->
-
 <section class="container section">
-
-```
-<div class="section-heading-row">
-
-    <div>
-
-        <p class="eyebrow">
-            FEATURED
-        </p>
-
-        <h2>
-            Popular products
-        </h2>
-
-        <p class="section-description">
-            Compare prices from different online stores in one place.
-        </p>
-
+    <div class="section-heading-row">
+        <div>
+            <p class="eyebrow">DEALS</p>
+            <h2>Featured products</h2>
+        </div>
     </div>
 
-</div>
-
-
-<div class="product-row">
-
-    {% for p in products %}
-
-        <a
-            class="product-card-new"
-            href="{% url 'product_detail' p.slug %}"
-        >
-
-            <div class="product-image-new">
-
-                {% if p.image_url %}
-
-                    <img
-                        src="{{ p.image_url }}"
-                        alt="{{ p.name }}"
-                        loading="lazy"
-                    >
-
-                {% else %}
-
-                    <div class="no-image">
-                        {{ p.name }}
-                    </div>
-
-                {% endif %}
-
-            </div>
-
-
+    <div class="product-grid">
+        {% for product in featured_products %}
+        <a class="product-card" href="{% url 'product_detail' product.slug %}">
+            {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            {% else %}
+                <div class="product-placeholder">RP</div>
+            {% endif %}
             <div class="product-card-body">
-
-                <div class="product-category">
-                    {{ p.category.name }}
-                </div>
-
-
-                <h3>
-                    {{ p.name }}
-                </h3>
-
-
-                {% if p.description %}
-
-                    <p>
-                        {{ p.description|truncatewords:12 }}
-                    </p>
-
+                <p class="product-category">{{ product.category.name }}</p>
+                <h3>{{ product.name }}</h3>
+                {% if product.lowest_price %}
+                    <strong>From {{ product.lowest_price }} USD</strong>
+                {% else %}
+                    <span>View prices</span>
                 {% endif %}
-
-
-                {% with offer=p.available_offers|first %}
-
-                    {% if offer %}
-
-                        <div class="price-row">
-
-                            <small>
-                                LOWEST PRICE
-                            </small>
-
-                            <strong>
-                                Rs. {{ offer.price }}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="store-name">
-                            {{ offer.store.name }}
-                        </div>
-
-                    {% else %}
-
-                        <div class="price-row">
-
-                            <small>
-                                PRICE
-                            </small>
-
-                            <strong>
-                                Check offers
-                            </strong>
-
-                        </div>
-
-                    {% endif %}
-
-                {% endwith %}
-
-
-                <span class="compare-link">
-                    Compare prices →
-                </span>
-
             </div>
-
         </a>
-
-    {% empty %}
-
-        <div class="empty">
-
-            <h3>
-                No products available
-            </h3>
-
-            <p>
-                Products will appear here once they are added.
-            </p>
-
-        </div>
-
-    {% endfor %}
-
-</div>
-```
-
+        {% empty %}
+        <p>No products yet. Import products using products.csv.</p>
+        {% endfor %}
+    </div>
 </section>
 
-<!-- =========================================
-     POPULAR STORES
-     ========================================= -->
-
 <section class="container section">
+    <div class="section-heading-row">
+        <div>
+            <p class="eyebrow">SHOP FROM</p>
+            <h2>Popular Stores</h2>
+        </div>
+        <a class="section-link" href="{% url 'stores' %}">View all →</a>
+    </div>
 
-```
-<div class="section-heading-row">
+    <div class="store-row">
+        {% for store in stores %}
+        <a class="store-card" href="{% url 'store_detail' store.id %}">
+            <div class="store-logo">{{ store.name|first|upper }}</div>
+            <div>
+                <h3>{{ store.name }}</h3>
+                <span>View products →</span>
+            </div>
+        </a>
+        {% empty %}
+        <p>No stores yet.</p>
+        {% endfor %}
+    </div>
+</section>
 
+<section class="container section feature-section">
     <div>
-
-        <p class="eyebrow">
-            SHOP FROM
-        </p>
-
-        <h2>
-            Popular Stores
-        </h2>
-
-        <p class="section-description">
-            Compare prices from stores available on RPCompare.
-        </p>
-
+        <p class="eyebrow">WHY RPCOMPARE</p>
+        <h2>Compare before you buy.</h2>
+        <p>See available offers, compare prices, and visit the merchant offering the product.</p>
     </div>
-
-
-    <a
-        class="section-link"
-        href="{% url 'stores' %}"
-    >
-        View all →
-    </a>
-
-</div>
-
-
-<div class="store-row">
-
-    {% for store in stores|slice:":6" %}
-
-        <a
-            class="store-card"
-            href="{% url 'store_detail' store.id %}"
-        >
-
-            <div class="store-logo">
-                {{ store.name|first|upper }}
-            </div>
-
-
-            <div class="store-card-content">
-
-                <h3>
-                    {{ store.name }}
-                </h3>
-
-                <span>
-                    View products →
-                </span>
-
-            </div>
-
-        </a>
-
-    {% empty %}
-
-        <p class="muted">
-            No stores available yet.
-        </p>
-
-    {% endfor %}
-
-</div>
-```
-
 </section>
-
-<!-- =========================================
-     FEATURES
-     ========================================= -->
-
-<section class="container section">
-
-```
-<div class="section-heading">
-
-    <p class="eyebrow">
-        WHY RPCOMPARE
-    </p>
-
-    <h2>
-        Shop smarter
-    </h2>
-
-    <p class="section-description">
-        Everything you need to make better buying decisions.
-    </p>
-
-</div>
-
-
-<div class="feature-grid">
-
-
-    <div class="feature-card">
-
-        <div class="feature-icon">
-            🔎
-        </div>
-
-        <h3>
-            Search
-        </h3>
-
-        <p>
-            Quickly find phones, laptops, TVs, headphones
-            and other electronics.
-        </p>
-
-    </div>
-
-
-    <div class="feature-card">
-
-        <div class="feature-icon">
-            ⚖️
-        </div>
-
-        <h3>
-            Compare
-        </h3>
-
-        <p>
-            Compare prices from different online stores
-            before buying.
-        </p>
-
-    </div>
-
-
-    <div class="feature-card">
-
-        <div class="feature-icon">
-            💰
-        </div>
-
-        <h3>
-            Find better prices
-        </h3>
-
-        <p>
-            See available offers and identify lower-priced
-            options more easily.
-        </p>
-
-    </div>
-
-
-    <div class="feature-card">
-
-        <div class="feature-icon">
-            🛒
-        </div>
-
-        <h3>
-            Buy directly
-        </h3>
-
-        <p>
-            Visit the retailer and complete your purchase
-            directly with the store.
-        </p>
-
-    </div>
-
-
-</div>
-```
-
-</section>
-
-<!-- =========================================
-     HOW IT WORKS
-     ========================================= -->
-
-<section class="how-section section">
-
-```
-<div class="container">
-
-    <div class="section-heading">
-
-        <p class="eyebrow">
-            HOW IT WORKS
-        </p>
-
-        <h2>
-            Shop smarter in three steps
-        </h2>
-
-    </div>
-
-
-    <div class="steps">
-
-
-        <div class="step">
-
-            <span>
-                01
-            </span>
-
-            <h3>
-                Search
-            </h3>
-
-            <p>
-                Search for the phone, laptop, TV or other
-                electronics you want.
-            </p>
-
-        </div>
-
-
-        <div class="step">
-
-            <span>
-                02
-            </span>
-
-            <h3>
-                Compare
-            </h3>
-
-            <p>
-                See available prices from different online
-                stores in one place.
-            </p>
-
-        </div>
-
-
-        <div class="step">
-
-            <span>
-                03
-            </span>
-
-            <h3>
-                Buy
-            </h3>
-
-            <p>
-                Open the store listing and complete your
-                purchase directly with the retailer.
-            </p>
-
-        </div>
-
-
-    </div>
-
-</div>
-```
-
-</section>
-
 {% endblock %}

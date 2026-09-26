@@ -1,0 +1,18 @@
+RPCompare Stage 3
+
+The included merchant_feed.csv is a LOCAL DEMONSTRATION FEED.
+
+Copy merchant_feed.csv into your existing project root:
+C:\Users\King\website\merchant_feed.csv
+
+Then run:
+python manage.py sync_feed --file merchant_feed.csv
+
+This stage adds:
+- working demonstration feed
+- product/offer synchronization
+- price-history recording
+- store metadata synchronization
+- scheduled-sync-ready command
+
+For real production products, replace the demonstration feed with an authorized merchant/affiliate feed.

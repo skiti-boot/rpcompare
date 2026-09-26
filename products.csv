@@ -1,0 +1,9 @@
+category,store,name,slug,description,image_url,price,currency,product_url,affiliate_url,in_stock,store_website
+Electronics,Amazon,Apple iPhone 15,apple-iphone-15,Apple iPhone 15 smartphone.,,699,USD,https://www.amazon.com/,https://www.amazon.com/,true,https://www.amazon.com/
+Electronics,eBay,Samsung Galaxy S24,samsung-galaxy-s24,Samsung Galaxy S24 smartphone.,,799,USD,https://www.ebay.com/,https://www.ebay.com/,true,https://www.ebay.com/
+Laptops,Best Buy,Dell Inspiron 15,dell-inspiron-15,Dell laptop for everyday computing.,,549,USD,https://www.bestbuy.com/,https://www.bestbuy.com/,true,https://www.bestbuy.com/
+Laptops,Newegg,HP Pavilion 15,hp-pavilion-15,HP Pavilion laptop.,,599,USD,https://www.newegg.com/,https://www.newegg.com/,true,https://www.newegg.com/
+Headphones,AliExpress,Sony WH-1000XM5,sony-wh-1000xm5,Wireless noise cancelling headphones.,,349,USD,https://www.aliexpress.com/,https://www.aliexpress.com/,true,https://www.aliexpress.com/
+TVs,Walmart,LG 55 Inch 4K TV,lg-55-inch-4k-tv,55 inch 4K smart television.,,429,USD,https://www.walmart.com/,https://www.walmart.com/,true,https://www.walmart.com/
+Smartwatches,Target,Apple Watch Series 9,apple-watch-series-9,Apple smartwatch.,,399,USD,https://www.target.com/,https://www.target.com/,true,https://www.target.com/
+Accessories,Amazon,Anker USB-C Charger,anker-usb-c-charger,USB-C fast charger.,,29,USD,https://www.amazon.com/,https://www.amazon.com/,true,https://www.amazon.com/

@@ -1,0 +1,41 @@
+RPCompare Stage 5
+
+FIX FOR YOUR ERROR:
+Stage 4 failed because SyncLog was never added to your actual compare/models.py.
+This package includes an installer that adds it automatically.
+
+1. Copy rpcompare_stage5_installer.py into C:\Users\King\website
+2. Run:
+   python rpcompare_stage5_installer.py
+3. Then:
+   python manage.py makemigrations compare
+   python manage.py migrate
+4. Then:
+   python manage.py sync_feed_logged --file merchant_feed.csv
+
+REAL MERCHANT ENGINE:
+Amazon: current Creators API integration.
+eBay: current Browse API integration with optional eBay Partner Network affiliate campaign.
+
+Required Amazon environment variables:
+AMAZON_CREATOR_CLIENT_ID
+AMAZON_CREATOR_CLIENT_SECRET
+AMAZON_PARTNER_TAG
+AMAZON_MARKETPLACE
+
+Required eBay variables:
+EBAY_CLIENT_ID
+EBAY_CLIENT_SECRET
+EBAY_MARKETPLACE_ID
+EBAY_CAMPAIGN_ID (for affiliate URLs)
+
+Live API data requires approved merchant/affiliate credentials.
+No fake prices, fake stock, or fake affiliate IDs are generated.
+
+Commands:
+python manage.py sync_merchant_api --merchant amazon --query "wireless headphones"
+python manage.py sync_merchant_api --merchant ebay --query "wireless headphones"
+
+For thousands of real products, the production version should use authorized
+bulk feeds, APIs, identifiers and scheduled category searches. Merchant sites
+should not be scraped without permission.

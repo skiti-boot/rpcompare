@@ -1,0 +1,21 @@
+RPCompare Stage 4 — Automatic Sync Infrastructure
+
+This stage adds a sync log model and logged sync command.
+
+IMPORTANT:
+The existing project can be kept intact. Because your current project may have a different migration numbering,
+do not blindly copy migrations_stage4.py into migrations without checking the existing migration name.
+
+The cleanest next step is:
+1. Add SyncLog to compare/models.py.
+2. Add SyncLog to compare/admin.py.
+3. Run:
+   python manage.py makemigrations compare
+   python manage.py migrate
+4. Use:
+   python manage.py sync_feed_logged --file merchant_feed.csv
+
+PythonAnywhere scheduled task:
+cd /home/Roshanp/rpcompare && /home/Roshanp/rpcompare/venv/bin/python manage.py sync_feed_logged --file /home/Roshanp/rpcompare/merchant_feed.csv
+
+This is ready for scheduled execution once your real authorized merchant feed replaces the demo feed.

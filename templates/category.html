@@ -1,175 +1,30 @@
 {% extends "base.html" %}
-
-{% block title %}
-{{ category.name }} — RPcompare
-{% endblock %}
+{% block title %}{{ category.name }} Prices — RPCompare{% endblock %}
 
 {% block content %}
+<section class="container section">
+    <p class="eyebrow">CATEGORY</p>
+    <h1>{{ category.name }}</h1>
+    <p class="section-description">Compare {{ category.name }} products and available store offers.</p>
 
-<div class="category-page">
-
-
-    <!-- CATEGORY NAVBAR -->
-    <div class="category-nav">
-
-        <div class="container category-nav-inner">
-
-            <a
-                href="{% url 'category' 'electronics' %}"
-                class="{% if category.slug == 'electronics' %}active{% endif %}"
-            >
-                Electronics
-            </a>
-
-
-            {% for cat in categories %}
-
-                <a
-                    href="{% url 'category' cat.slug %}"
-                    class="{% if cat.slug == category.slug %}active{% endif %}"
-                >
-                    {{ cat.name }}
-                </a>
-
-            {% endfor %}
-
-        </div>
-
+    <div class="product-grid">
+        {% for product in products %}
+        <a class="product-card" href="{% url 'product_detail' product.slug %}">
+            {% if product.image_url %}
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            {% else %}
+            <div class="product-placeholder">RP</div>
+            {% endif %}
+            <div class="product-card-body">
+                <h3>{{ product.name }}</h3>
+                {% if product.lowest_price %}
+                <strong>From {{ product.lowest_price }}</strong>
+                {% endif %}
+            </div>
+        </a>
+        {% empty %}
+        <p>No products in this category yet.</p>
+        {% endfor %}
     </div>
-
-
-    <!-- CATEGORY HEADER -->
-    <section class="container category-header">
-
-        <p class="eyebrow">
-            ELECTRONICS
-        </p>
-
-        <h1>
-            {{ category.name }}
-        </h1>
-
-        <p>
-            Compare {{ category.name|lower }}
-            prices from multiple online stores.
-        </p>
-
-    </section>
-
-
-    <!-- PRODUCTS -->
-    <section class="container category-products">
-
-        <div class="section-heading">
-
-            <h2>
-                {{ category.name }} Products
-            </h2>
-
-        </div>
-
-
-        <div class="grid">
-
-            {% for p in products %}
-
-                <a
-                    class="card product-card"
-                    href="{% url 'product_detail' p.slug %}"
-                >
-
-                    <div class="product-image">
-
-                        {% if p.image_url %}
-
-                            <img
-                                src="{{ p.image_url }}"
-                                alt="{{ p.name }}"
-                            >
-
-                        {% else %}
-
-                            <div class="no-image">
-                                No image
-                            </div>
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <div class="product-info">
-
-                        <p class="eyebrow">
-                            {{ category.name }}
-                        </p>
-
-                        <h3>
-                            {{ p.name }}
-                        </h3>
-
-
-                        {% if p.description %}
-
-                            <p>
-                                {{ p.description|truncatewords:15 }}
-                            </p>
-
-                        {% endif %}
-
-
-                        {% with offer=p.available_offers|first %}
-
-                            <div class="product-price">
-
-                                <small>
-                                    From
-                                </small>
-
-                                <strong>
-                                    Rs. {{ offer.price }}
-                                </strong>
-
-                            </div>
-
-
-                            <div class="product-store">
-                                {{ offer.store.name }}
-                            </div>
-
-                        {% endwith %}
-
-
-                        <span class="card-link">
-                            Compare prices →
-                        </span>
-
-                    </div>
-
-                </a>
-
-
-            {% empty %}
-
-                <div class="empty">
-
-                    <h3>
-                        No products available
-                    </h3>
-
-                    <p>
-                        There are currently no products with available prices
-                        in this category.
-                    </p>
-
-                </div>
-
-            {% endfor %}
-
-        </div>
-
-    </section>
-
-</div>
-
+</section>
 {% endblock %}
